@@ -1,5 +1,6 @@
 import { Box } from "@mui/system";
 import React, { useState } from "react";
+import store from "../store";
 
 type Props = { src: string };
 
@@ -7,6 +8,14 @@ export default function VideoPreview({ src }: Props) {
   const [showVideo, setShowVideo] = useState(false);
   return (
     <Box
+      onClick={() => {
+        const state = store.getState();
+
+        store.setState({
+          ...state,
+          timelineChannel: [...state.timelineChannel, { src, duration: 27 }],
+        });
+      }}
       onMouseEnter={() => {
         setShowVideo(true);
       }}
