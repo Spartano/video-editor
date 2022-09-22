@@ -40,16 +40,25 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
   padding: "15px 0",
   "& .MuiSlider-thumb": {
     height: 28,
-    width: 28,
+    width: 8,
+    borderRadius: 0,
     backgroundColor: "#fff",
     boxShadow: CustomBoxShadow,
     "&:focus, &:hover, &.Mui-active": {
       boxShadow:
         "0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)",
-      // Reset on touch devices, it doesn't add specificity
-      "@media (hover: none)": {
-        boxShadow: CustomBoxShadow,
-      },
+    },
+    "&:before": {
+      backgroundColor: "#fff",
+      zIndex: 1,
+    },
+    "&:after": {
+      height: 68,
+      width: 2,
+      borderRadius: 0,
+      opacity: 0.6,
+      background: "red",
+      top: -10,
     },
   },
   "& .MuiSlider-valueLabel": {
