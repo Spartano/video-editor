@@ -1,10 +1,10 @@
 import { Box } from "@mui/system";
 import React, { useState } from "react";
-import store from "../store";
+import store, { ChannelClip } from "../store";
 
-type Props = { src: string };
+type Props = { clip: { src: string; id: string } };
 
-export default function VideoPreview({ src }: Props) {
+export default function VideoPreview({ clip }: Props) {
   const [showVideo, setShowVideo] = useState(false);
   return (
     <Box
@@ -16,9 +16,8 @@ export default function VideoPreview({ src }: Props) {
           timelineChannel: [
             ...state.timelineChannel,
             {
-              src,
+              ...clip,
               duration: 27,
-              id: Math.random().toString(36).substring(2, 15),
             },
           ],
         });
@@ -77,7 +76,7 @@ export default function VideoPreview({ src }: Props) {
           component="video"
           loop
           preload={"metadata"}
-          src={src}
+          src={clip.src}
           sx={{
             position: "relative",
             gridArea: "1/1/-1/-1",

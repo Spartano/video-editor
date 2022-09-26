@@ -1,11 +1,14 @@
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
-import store, { type ValuesStore } from "./store";
 import VideoPreview from "./components/VideoPreview";
 import EditorTimeline from "./components/EditorTimeline";
 
 function App() {
-  const videos = ["video1.mp4", "video2.mp4", "video3.mp4"];
+  const videos = [
+    { src: "video1.mp4", id: Math.random().toString(36).substring(2, 15) },
+    { src: "video2.mp4", id: Math.random().toString(36).substring(2, 15) },
+    { src: "video3.mp4", id: Math.random().toString(36).substring(2, 15) },
+  ];
   return (
     <Box
       sx={{
@@ -47,7 +50,7 @@ function App() {
           }}
         >
           {videos.map((video) => (
-            <VideoPreview key={video} src={video} />
+            <VideoPreview key={video.id} clip={video} />
           ))}
         </Box>
         <main className="flex flex-col items-center justify-center">
@@ -59,7 +62,20 @@ function App() {
               backgroundColor: "#000",
             }}
           >
-            video
+            {videos.map((video, i) => (
+              <Box
+                component={"video"}
+                key={i}
+                id={video.id}
+                src={video.src}
+                height={"100%"}
+                width={"100%"}
+                preload="auto"
+                sx={{
+                  display: i === 0 ? "auto" : "none",
+                }}
+              />
+            ))}
           </Box>
           <Box>controls</Box>
         </main>

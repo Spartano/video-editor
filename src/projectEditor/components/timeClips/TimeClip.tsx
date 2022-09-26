@@ -3,6 +3,7 @@ import Slider from "@mui/material/Slider";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { ChannelClip, setSelectedClip } from "../../store";
+import { useEffect, useRef } from "react";
 
 export default function TimeClip({
   clip,
@@ -12,6 +13,19 @@ export default function TimeClip({
   duration: number;
 }) {
   const width = (clip.duration * 100) / duration + "%";
+  const canvas = useRef<HTMLCanvasElement>(null);
+
+  // useEffect(() => {
+  //   if (canvas.current) {
+  //     var _VIDEO = document.querySelector(`#${clip.id}`) as HTMLVideoElement;
+  //     const ctx = canvas.current.getContext("2d");
+  //     console.log(_VIDEO);
+  //     if (ctx && _VIDEO) {
+  //       ctx.drawImage(_VIDEO, 0, 0, 52, 65);
+  //     }
+  //   }
+  // }, [clip]);
+
   return (
     <Box
       sx={{ width: width, transition: "width .25s" }}
@@ -53,10 +67,15 @@ export default function TimeClip({
         ></Box>
 
         <Box
+          component={"canvas"}
           className={"timeline-clips"}
+          ref={canvas}
           sx={{
-            gridArea: "1/1/-1/-1",
-            clipPath: "inset(4px 9px)",
+            gridArea: "main",
+            placeSelf: "stretch",
+            contain: "strict",
+            backgroundImage:
+              "repeating-linear-gradient(to right, rgba(255, 255, 255, 0.1) 0 52px, rgb(19, 19, 19) 0 54px)",
           }}
         ></Box>
         <Box
