@@ -4,13 +4,6 @@ import store, { type ValuesStore } from "./store";
 import VideoPreview from "./components/VideoPreview";
 import EditorTimeline from "./components/EditorTimeline";
 
-const DisplayValue = ({ item }: { item: keyof ValuesStore }) => (
-  <div>
-    {/* {item}: {store.useStore((state) => state[item])} */}
-    ss
-  </div>
-);
-
 function App() {
   const videos = ["video1.mp4", "video2.mp4", "video3.mp4"];
   return (
@@ -41,7 +34,7 @@ function App() {
         sx={{
           display: "grid",
           gridTemplateColumns: "[panels] clamp(180px, 20%, 260px) [player] 1fr",
-          gridTemplateRows: "[player] 1fr [timeline] 150px",
+          gridTemplateRows: "[player] 1fr [timeline] 174px",
           gap: "10px",
           height: "300px",
         }}

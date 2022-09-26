@@ -13,7 +13,14 @@ export default function VideoPreview({ src }: Props) {
 
         store.setState({
           ...state,
-          timelineChannel: [...state.timelineChannel, { src, duration: 27 }],
+          timelineChannel: [
+            ...state.timelineChannel,
+            {
+              src,
+              duration: 27,
+              id: Math.random().toString(36).substring(2, 15),
+            },
+          ],
         });
       }}
       onMouseEnter={() => {
