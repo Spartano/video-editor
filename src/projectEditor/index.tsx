@@ -1,9 +1,10 @@
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
-import VideoPreview from "./components/VideoPreview";
 import EditorTimeline from "./components/EditorTimeline";
+import EditorPlayer from "./components/editorPlayer";
+import EditorAside from "./components/aside";
 
-function App() {
+function ProjectEditor() {
   const videos = [
     { src: "video1.mp4", id: Math.random().toString(36).substring(2, 15) },
     { src: "video2.mp4", id: Math.random().toString(36).substring(2, 15) },
@@ -42,47 +43,12 @@ function App() {
           height: "300px",
         }}
       >
-        <Box
-          component="aside"
-          sx={{
-            display: "grid",
-            gap: "10px",
-          }}
-        >
-          {videos.map((video) => (
-            <VideoPreview key={video.id} clip={video} />
-          ))}
-        </Box>
-        <main className="flex flex-col items-center justify-center">
-          <Box
-            sx={{
-              width: "786px",
-              height: "442px",
-              display: "grid",
-              backgroundColor: "#000",
-            }}
-          >
-            {videos.map((video, i) => (
-              <Box
-                component={"video"}
-                key={i}
-                id={video.id}
-                src={video.src}
-                height={"100%"}
-                width={"100%"}
-                preload="auto"
-                sx={{
-                  display: i === 0 ? "auto" : "none",
-                }}
-              />
-            ))}
-          </Box>
-          <Box>controls</Box>
-        </main>
+        <EditorAside videos={videos} />
+        <EditorPlayer />
         <EditorTimeline />
       </Box>
     </Box>
   );
 }
 
-export default App;
+export default ProjectEditor;

@@ -9,11 +9,13 @@ export type ChannelClip = {
 export type ValuesStore = {
   timelineChannel: ChannelClip[];
   selectedClip: null | string;
+  timeSeeker: number;
 };
 
 const store = createStore<ValuesStore>({
   timelineChannel: [],
   selectedClip: null,
+  timeSeeker: 0,
 });
 
 export default store;
@@ -31,6 +33,18 @@ export const getTimelineChannel = () => {
     duration,
   };
 };
+export const getTimeSeeker = () => {
+  return store.useStore((state) => state.timeSeeker);
+};
+
+export const setTimeSeeker = (newTimeSeeker: number) => {
+  const state = store.getState();
+
+  store.setState({
+    ...state,
+    timeSeeker: newTimeSeeker,
+  });
+};
 
 export const getSelectedClip = () => {
   return store.useStore((state) => state.selectedClip);
@@ -44,6 +58,7 @@ export const setSelectedClip = (clipId: string | null) => {
     selectedClip: clipId,
   });
 };
+
 export const deleteSelectedClip = () => {
   const state = store.getState();
   const selectedClip = state.selectedClip;

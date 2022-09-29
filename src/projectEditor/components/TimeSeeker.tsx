@@ -2,7 +2,11 @@ import * as React from "react";
 import Slider from "@mui/material/Slider";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import store, { getTimelineChannel } from "../store";
+import store, {
+  getTimelineChannel,
+  getTimeSeeker,
+  setTimeSeeker,
+} from "../store";
 
 const CustomBoxShadow =
   "0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)";
@@ -99,14 +103,28 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
 
 export default function TimeSeeker() {
   const { duration } = getTimelineChannel();
+  const value = getTimeSeeker();
   const marks = generateMarks(duration);
+
+  const handleSliderChange = (event: Event, newValue: number | number[]) => {
+    if (typeof newValue === "number") {
+      setTimeSeeker(newValue);
+    }
+  };
 
   return (
     <Box
       className="time-seeker"
       sx={{ width: 1, px: 2, pointerEvents: "auto" }}
     >
-      <CustomSlider step={1} marks={marks} min={0} max={duration} />
+      <CustomSlider
+        step={1}
+        marks={marks}
+        min={0}
+        max={duration}
+        value={typeof value === "number" ? value : 0}
+        onChange={handleSliderChange}
+      />
     </Box>
   );
 }

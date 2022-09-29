@@ -8,7 +8,7 @@ import store, {
 } from "../store";
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import TimeSeeker from "./TimeSeeker";
-import TimeClips from "./TimeClips";
+import TimeClips from "./timeClips";
 
 type Props = {};
 

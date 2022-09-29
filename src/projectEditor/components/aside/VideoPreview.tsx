@@ -1,6 +1,6 @@
 import { Box } from "@mui/system";
 import React, { useState } from "react";
-import store, { ChannelClip } from "../store";
+import store, { ChannelClip } from "../../store";
 
 type Props = { clip: { src: string; id: string } };
 
