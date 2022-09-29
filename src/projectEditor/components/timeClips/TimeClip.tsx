@@ -3,7 +3,7 @@ import Slider from "@mui/material/Slider";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { ChannelClip, setSelectedClip } from "../../store";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function TimeClip({
   clip,
@@ -14,17 +14,29 @@ export default function TimeClip({
 }) {
   const width = (clip.duration * 100) / duration + "%";
   const canvas = useRef<HTMLCanvasElement>(null);
+  const dummyVideo = useRef<HTMLVideoElement>(null);
+  const spriteNums = useRef(0);
+  const spriteDx = useRef(0);
+  const [timeGap, setTimeGap] = useState(5);
 
-  // useEffect(() => {
-  //   if (canvas.current) {
-  //     var _VIDEO = document.querySelector(`#${clip.id}`) as HTMLVideoElement;
-  //     const ctx = canvas.current.getContext("2d");
-  //     console.log(_VIDEO);
-  //     if (ctx && _VIDEO) {
-  //       ctx.drawImage(_VIDEO, 0, 0, 52, 65);
-  //     }
-  //   }
-  // }, [clip]);
+  const generateStripe = () => {
+    if (canvas.current) {
+      const ctx = canvas.current.getContext("2d");
+
+      if (
+        spriteNums.current < 5 &&
+        ctx &&
+        dummyVideo.current &&
+        dummyVideo.current?.currentTime < clip.duration
+      ) {
+        ctx.drawImage(dummyVideo.current, spriteDx.current, 0, 52, 200);
+        spriteDx.current = spriteDx.current + 52;
+        spriteNums.current = spriteNums.current + 1;
+        dummyVideo.current.currentTime =
+          dummyVideo.current.currentTime + timeGap;
+      }
+    }
+  };
 
   return (
     <Box
@@ -128,6 +140,17 @@ export default function TimeClip({
           }}
         ></Box>
       </Box>
+
+      <video
+        onCanPlayThrough={generateStripe}
+        className={"dummyVideo"}
+        style={{ display: "none" }}
+        preload="auto"
+        src={clip.src}
+        ref={dummyVideo}
+        width={200}
+        height={200}
+      />
     </Box>
   );
 }

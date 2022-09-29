@@ -46,7 +46,6 @@ export default function EditorPlayer() {
           const { startOffset, endOffset } = getTimeOffset(clips, stopIndex);
           const isVisible =
             startOffset <= timeseekerValue && timeseekerValue < endOffset;
-          console.log(startOffset, endOffset, timeseekerValue);
 
           const seekTime = timeseekerValue - startOffset;
           return (
