@@ -71,3 +71,12 @@ export const deleteSelectedClip = () => {
     timelineChannel: newClips,
   });
 };
+
+export const setTimelineChannel = (newClips: ChannelClip[]) => {
+  const state = store.getState();
+
+  store.setState({
+    ...state,
+    timelineChannel: newClips,
+  });
+};

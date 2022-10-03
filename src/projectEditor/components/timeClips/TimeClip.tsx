@@ -1,38 +1,67 @@
-import * as React from "react";
-import Slider from "@mui/material/Slider";
-import { styled } from "@mui/material/styles";
+import { AnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import Box from "@mui/material/Box";
+import * as React from "react";
+import { useRef } from "react";
 import { ChannelClip, setSelectedClip } from "../../store";
-import { useEffect, useRef } from "react";
+
+var stringToColour = function (str: string) {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  var colour = "#";
+  for (var i = 0; i < 3; i++) {
+    var value = (hash >> (i * 8)) & 0xff;
+    colour += ("00" + value.toString(16)).substr(-2);
+  }
+  return colour;
+};
 
 export default function TimeClip({
   clip,
   duration,
+  isOverlay,
 }: {
   clip: ChannelClip;
   duration: number;
+  isOverlay?: boolean;
 }) {
   const width = (clip.duration * 100) / duration + "%";
   const canvas = useRef<HTMLCanvasElement>(null);
 
-  // useEffect(() => {
-  //   if (canvas.current) {
-  //     var _VIDEO = document.querySelector(`#${clip.id}`) as HTMLVideoElement;
-  //     const ctx = canvas.current.getContext("2d");
-  //     console.log(_VIDEO);
-  //     if (ctx && _VIDEO) {
-  //       ctx.drawImage(_VIDEO, 0, 0, 52, 65);
-  //     }
-  //   }
-  // }, [clip]);
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: clip.id,
+      transition: {
+        duration: 200,
+        easing: "linear",
+      },
+    });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  var randomColor = stringToColour(clip.id);
 
   return (
     <Box
-      sx={{ width: width, transition: "width .25s" }}
+      sx={{
+        width: isOverlay ? "100%" : width,
+        transition: "width .25s",
+        height: isOverlay ? 52 : null,
+        opacity: isOverlay ? 0.8 : null,
+      }}
       className={`time-clip relative`}
       onClick={() => {
         setSelectedClip(clip.id);
       }}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
     >
       <Box
         sx={{
@@ -65,7 +94,16 @@ export default function TimeClip({
             mx: "1px",
           }}
         ></Box>
-
+        <Box
+          sx={{
+            background: randomColor,
+            width: 20,
+            height: 20,
+            position: "absolute",
+            top: 0,
+            left: 20,
+          }}
+        ></Box>
         <Box
           component={"canvas"}
           className={"timeline-clips"}

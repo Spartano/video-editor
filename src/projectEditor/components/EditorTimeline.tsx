@@ -1,6 +1,7 @@
 import { ClickAwayListener, Divider, IconButton } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
+
 import store, {
   deleteSelectedClip,
   getSelectedClip,
@@ -14,6 +15,7 @@ type Props = {};
 
 export default function EditorTimeline({}: Props) {
   const selectedClip = getSelectedClip();
+
   return (
     <ClickAwayListener onClickAway={() => setSelectedClip(null)}>
       <Box
