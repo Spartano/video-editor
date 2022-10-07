@@ -51,9 +51,15 @@ export default function TimeClip({
   };
 
   const leftHandleResize = (e: React.DragEvent<HTMLDivElement>) => {
-    if (containerRef.current?.offsetWidth) {
+    if (containerRef.current?.offsetWidth && e) {
       const currentWidth = containerRef.current?.offsetWidth;
       const startOffset = e.clientX - initialPos;
+
+      if (startOffset < 0) {
+        //guard for resizing in oposite direction
+        setTrimPos(null);
+        return;
+      }
       const trimPercentage = Math.abs(
         Math.floor((startOffset * 100) / currentWidth)
       );
@@ -72,6 +78,12 @@ export default function TimeClip({
     if (containerRef.current?.offsetWidth) {
       const currentWidth = containerRef.current?.offsetWidth;
       const startOffset = e.clientX - initialPos;
+
+      if (startOffset > 0) {
+        //guard for resizing in oposite direction
+        setTrimPos(null);
+        return;
+      }
       const trimPercentage = Math.abs(
         Math.floor((startOffset * 100) / currentWidth)
       );
@@ -125,7 +137,7 @@ export default function TimeClip({
       id={clip.id}
       sx={{
         position: "relative",
-        width: isOverlay ? "100%" : width,
+        width: isOverlay ? "90%" : width,
         transition: "width .25s",
         height: isOverlay ? 52 : null,
         opacity: isOverlay ? 0.8 : null,

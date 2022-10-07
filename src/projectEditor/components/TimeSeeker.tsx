@@ -13,7 +13,6 @@ const CustomBoxShadow =
 
 const generateMarks = (size: number) => {
   let r = [];
-  console.log(size);
   for (let i = 0; i <= size; i += 1) {
     if (i % 10 == 0 || i === Math.round(size - 1)) {
       const dateObj = new Date(i * 1000);
