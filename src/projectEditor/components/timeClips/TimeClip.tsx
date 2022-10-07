@@ -24,10 +24,12 @@ export default function TimeClip({
   const [initialPos, setInitialPos] = useState(0);
   const [trimPos, setTrimPos] = useState<TrimPos | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const deleteDivRef = useRef<HTMLDivElement>(null);
 
   const initial = (e: React.DragEvent<HTMLDivElement>) => {
     setInitialPos(e.clientX);
   };
+
   const final = (e: React.DragEvent<HTMLDivElement>) => {
     if (containerRef.current?.offsetWidth && trimPos) {
       const currentWidth = containerRef.current?.offsetWidth;
@@ -37,7 +39,6 @@ export default function TimeClip({
       );
 
       // update the clipTrimOffset
-
       updateClip({
         clip,
         trimPos,
@@ -50,11 +51,56 @@ export default function TimeClip({
   };
 
   const leftHandleResize = (e: React.DragEvent<HTMLDivElement>) => {
-    setTrimPos("left");
+    if (containerRef.current?.offsetWidth) {
+      const currentWidth = containerRef.current?.offsetWidth;
+      const startOffset = e.clientX - initialPos;
+      const trimPercentage = Math.abs(
+        Math.floor((startOffset * 100) / currentWidth)
+      );
+
+      if (deleteDivRef.current) {
+        deleteDivRef.current.style.width = trimPercentage + "%";
+        deleteDivRef.current.style.left = "0";
+        deleteDivRef.current.style.right = "auto";
+      }
+
+      setTrimPos("left");
+    }
   };
 
   const rightHandleResize = (e: React.DragEvent<HTMLDivElement>) => {
-    setTrimPos("right");
+    if (containerRef.current?.offsetWidth) {
+      const currentWidth = containerRef.current?.offsetWidth;
+      const startOffset = e.clientX - initialPos;
+      const trimPercentage = Math.abs(
+        Math.floor((startOffset * 100) / currentWidth)
+      );
+
+      if (deleteDivRef.current) {
+        deleteDivRef.current.style.width = trimPercentage + "%";
+        deleteDivRef.current.style.left = "auto";
+        deleteDivRef.current.style.right = "0";
+      }
+
+      setTrimPos("right");
+    }
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   const width = (clip.duration * 100) / duration + "%";
@@ -86,7 +132,25 @@ export default function TimeClip({
       }}
       className={`time-clip relative`}
       ref={containerRef}
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
     >
+      {trimPos && (
+        <Box
+          ref={deleteDivRef}
+          sx={{
+            height: "100%",
+            zIndex: 1,
+            position: "absolute",
+            boxShadow: "inset 0 0 0 2px rgba(230,0,77,.8)",
+            backgroundImage:
+              "repeating-linear-gradient(130deg, transparent 0, rgba(230, 0, 77, 0.2) 1px 6px, transparent 7px 12px),linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))",
+          }}
+        ></Box>
+      )}
+
       <Box
         sx={{
           position: "absolute",

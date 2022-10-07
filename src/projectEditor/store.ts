@@ -89,6 +89,8 @@ export const updateClip = ({
     );
   }
 
+  console.log(newClip);
+
   const updatedData = state.timelineChannel.map((oldClip) => {
     if (oldClip.id === clip.id) {
       return newClip;
