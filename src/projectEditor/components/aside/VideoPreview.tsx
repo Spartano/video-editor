@@ -18,6 +18,8 @@ export default function VideoPreview({ clip }: Props) {
             {
               ...clip,
               duration: 27,
+              trimStartOffset: 0,
+              trimEndOffset: 0,
             },
           ],
         });

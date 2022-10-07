@@ -45,7 +45,6 @@ export default function TimeClips() {
     setActiveId(event.active.id);
   }
 
-  console.log(activeClip);
   return (
     <DndContext
       sensors={sensors}

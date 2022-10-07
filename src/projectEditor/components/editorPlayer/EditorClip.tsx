@@ -2,7 +2,7 @@ import * as React from "react";
 import Slider from "@mui/material/Slider";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import { ChannelClip, setSelectedClip } from "../../store";
+import { ChannelClip } from "../../store";
 import { useEffect, useRef } from "react";
 
 export default function EditorPlayer({

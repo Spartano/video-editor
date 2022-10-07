@@ -1,11 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import {
-  ChannelClip,
-  setSelectedClip,
-  getTimelineChannel,
-  getTimeSeeker,
-} from "../../store";
+import { ChannelClip, getTimelineChannel, getTimeSeeker } from "../../store";
 import EditorClip from "./EditorClip";
 
 const getTimeOffset = (clips: ChannelClip[], stopIndex: number) => {
@@ -46,7 +41,6 @@ export default function EditorPlayer() {
           const { startOffset, endOffset } = getTimeOffset(clips, stopIndex);
           const isVisible =
             startOffset <= timeseekerValue && timeseekerValue < endOffset;
-          console.log(startOffset, endOffset, timeseekerValue);
 
           const seekTime = timeseekerValue - startOffset;
           return (

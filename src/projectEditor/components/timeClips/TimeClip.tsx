@@ -1,22 +1,16 @@
-import { AnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import DeleteForever from "@mui/icons-material/DeleteForever";
 import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
 import * as React from "react";
-import { useRef } from "react";
-import { ChannelClip, setSelectedClip } from "../../store";
-
-var stringToColour = function (str: string) {
-  var hash = 0;
-  for (var i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  var colour = "#";
-  for (var i = 0; i < 3; i++) {
-    var value = (hash >> (i * 8)) & 0xff;
-    colour += ("00" + value.toString(16)).substr(-2);
-  }
-  return colour;
-};
+import { useRef, useState } from "react";
+import {
+  ChannelClip,
+  deleteSelectedClip,
+  TrimPos,
+  updateClip,
+} from "../../store";
 
 export default function TimeClip({
   clip,
@@ -27,6 +21,42 @@ export default function TimeClip({
   duration: number;
   isOverlay?: boolean;
 }) {
+  const [initialPos, setInitialPos] = useState(0);
+  const [trimPos, setTrimPos] = useState<TrimPos | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const initial = (e: React.DragEvent<HTMLDivElement>) => {
+    setInitialPos(e.clientX);
+  };
+  const final = (e: React.DragEvent<HTMLDivElement>) => {
+    if (containerRef.current?.offsetWidth && trimPos) {
+      const currentWidth = containerRef.current?.offsetWidth;
+      const startOffset = e.clientX - initialPos;
+      const trimPercentage = Math.abs(
+        Math.floor((startOffset * 100) / currentWidth)
+      );
+
+      // update the clipTrimOffset
+
+      updateClip({
+        clip,
+        trimPos,
+        trimPercentage,
+      });
+
+      setInitialPos(0);
+      setTrimPos(null);
+    }
+  };
+
+  const leftHandleResize = (e: React.DragEvent<HTMLDivElement>) => {
+    setTrimPos("left");
+  };
+
+  const rightHandleResize = (e: React.DragEvent<HTMLDivElement>) => {
+    setTrimPos("right");
+  };
+
   const width = (clip.duration * 100) / duration + "%";
   const canvas = useRef<HTMLCanvasElement>(null);
 
@@ -44,24 +74,18 @@ export default function TimeClip({
     transition,
   };
 
-  var randomColor = stringToColour(clip.id);
-
   return (
     <Box
+      id={clip.id}
       sx={{
+        position: "relative",
         width: isOverlay ? "100%" : width,
         transition: "width .25s",
         height: isOverlay ? 52 : null,
         opacity: isOverlay ? 0.8 : null,
       }}
       className={`time-clip relative`}
-      onClick={() => {
-        setSelectedClip(clip.id);
-      }}
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
+      ref={containerRef}
     >
       <Box
         sx={{
@@ -94,20 +118,11 @@ export default function TimeClip({
             mx: "1px",
           }}
         ></Box>
+
         <Box
-          sx={{
-            background: randomColor,
-            width: 20,
-            height: 20,
-            position: "absolute",
-            top: 0,
-            left: 20,
-          }}
-        ></Box>
-        <Box
+          ref={setNodeRef}
           component={"canvas"}
           className={"timeline-clips"}
-          ref={canvas}
           sx={{
             gridArea: "main",
             placeSelf: "stretch",
@@ -115,8 +130,25 @@ export default function TimeClip({
             backgroundImage:
               "repeating-linear-gradient(to right, rgba(255, 255, 255, 0.1) 0 52px, rgb(19, 19, 19) 0 54px)",
           }}
+          style={style}
+          {...attributes}
+          {...listeners}
         ></Box>
+
+        <div className="timeline-controls absolute flex flex-1 right-[8px] z-[2]">
+          <IconButton
+            color="info"
+            size={"small"}
+            onClick={() => deleteSelectedClip(clip.id)}
+          >
+            <DeleteForever fontSize={"small"} />
+          </IconButton>
+        </div>
         <Box
+          draggable="true"
+          onDragStart={initial}
+          onDragEnd={final}
+          onDrag={leftHandleResize}
           className={"left-handle"}
           sx={{
             gridColumn: "left-handle",
@@ -140,6 +172,10 @@ export default function TimeClip({
           }}
         ></Box>
         <Box
+          draggable="true"
+          onDragStart={initial}
+          onDragEnd={final}
+          onDrag={rightHandleResize}
           className={"right-handle"}
           sx={{
             justifySelf: "end",
